@@ -18,32 +18,32 @@ const App = () => {
   const [channel, setChannel] = useState(" ")
   const authToken = cookies.AuthToken
 
-  useEffect(() => {
-    const setupClient = async () => {
-      try {
-        await client.connectUser(
-          {
-            id: cookies.UserId,
-            name: cookies.Name,
-            hashedPassword: cookies.HashedPassword
-          },
-          authToken,
-        )
+  // useEffect(() => {
+   
+  // }, []);
 
-        const channel = await client.channel("gaming", "gaming-chat-demo", {
-          name: "Gaming Chat Demo",
-        })
-        setChannel(channel)
+  const setupClient = async () => {
+    try {
+      await client.connectUser(
+        {
+          id: cookies.UserId,
+          name: cookies.Name,
+          hashedPassword: cookies.HashedPassword
+        },
+        authToken
+      )
 
-      } catch (err) {
-        console.log(err);
-      }
-    };
+      const channel = await client.channel("gaming", "gaming-chat-demo", {
+        name: "Gaming Chat Demo",
+      })
+      setChannel(channel)
 
-    if(authToken) setupClient();
-  }, []);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  if (!clientReady) return null;
+  if(authToken) setupClient();
 
   return (
     <>
