@@ -7,12 +7,13 @@ export default function Auth(){
 
     const [cookies, setCookies, removeCookies] = useCookies(['user'])
     const [isLogin, setIsLogin] = useState(true)
-    const [username,setUsername] = useState(" ")
-    const [password,setPassword] = useState(" ")
-    const [confirmPassword,setConfirmPassword] = useState(" ")
+    const [username,setUsername] = useState(null)
+    const [password,setPassword] = useState(null)
+    const [confirmPassword,setConfirmPassword] = useState(null)
     const [error, setError] = useState(false)
 
     const handleSubmit = async (endpoint) => {
+        console.log(endpoint)
         if( !isLogin && password !== confirmPassword) {
             setError(true)
             return 
@@ -21,8 +22,8 @@ export default function Auth(){
             username, 
             password
         })
-
         console.log(response)
+        
 
         setCookies('Name', response.data.username)
         setCookies('HashedPassword', response.data.hashedPassword)
@@ -59,7 +60,7 @@ export default function Auth(){
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     />}
                     {error && <p>Passwords do not match!</p>}
-                    <button className="standard-button"onClick={() => handleSubmit(isLogin ? 'login': 'signup')}>Go!</button>
+                    <button className="standard-button"onClick={() => handleSubmit(isLogin ? 'login' : 'signup')}>Go!</button>
                 </div>
                     <div className="auth-options">
                         <button
