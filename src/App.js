@@ -8,29 +8,26 @@ import {
   Chat,
   Channel
 } from 'stream-chat-react';
+import {useCookies} from 'react-cookie'
 import '@stream-io/stream-chat-css/dist/css/index.css';
-
-
-const filters = { type: 'messaging' };
-const options = { state: true, presence: true, limit: 10 };
-const sort = { last_message_at: -1 };
 
 const client = StreamChat.getInstance('kvjfwedgn6km');
 
 const App = () => {
-  const [clientReady, setClientReady] = useState(false);
+  const [cookies, setCookies, removeCookies] = useCookies(['user'])
   const [channel, setChannel] = useState(" ")
-  const authToken = false
+  const authToken = cookies.AuthToken
 
   useEffect(() => {
     const setupClient = async () => {
       try {
         await client.connectUser(
           {
-            id: 'dave-matthews',
-            name: 'Dave Matthews',
+            id: cookies.UserId,
+            name: cookies.Name,
+            hashedPassword: cookies.HashedPassword
           },
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZGF2ZS1tYXR0aGV3cyJ9.JnFNbOrqM6eC7TLPeh0vZgCb7nxat4lHOoJQudeU8Zg',
+          authToken,
         )
 
         const channel = await client.channel("gaming", "gaming-chat-demo", {
@@ -38,13 +35,12 @@ const App = () => {
         })
         setChannel(channel)
 
-        setClientReady(true);
       } catch (err) {
         console.log(err);
       }
     };
 
-    setupClient();
+    if(authToken) setupClient();
   }, []);
 
   if (!clientReady) return null;
@@ -52,10 +48,10 @@ const App = () => {
   return (
     <>
       {!authToken && <Auth/>}
-      {authToken && <Chat client={client}>
+      {authToken && <Chat client={client} darkMode={true}>
         <Channel channel={channel}>
-        <Video/>
-        <MessagingContainer/>
+          <Video/>
+          <MessagingContainer/>
         </Channel>
       </Chat>}
     </>

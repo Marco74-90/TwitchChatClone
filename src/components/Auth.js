@@ -1,9 +1,11 @@
 import React from 'react';
 import {useState} from 'react'
 import axios from 'axios'
+import {useCookies} from 'react-cookie'
 
 export default function Auth(){
 
+    const [cookies, setCookies, removeCookies] = useCookies(['user'])
     const [isLogin, setIsLogin] = useState(true)
     const [username,setUsername] = useState(" ")
     const [password,setPassword] = useState(" ")
@@ -15,12 +17,19 @@ export default function Auth(){
             setError(true)
             return 
         }
-        const response = await axios.post(`https://localhost:8000/signup`,{
+        const response = await axios.post(`http://localhost:8000/signup`,{
             username, 
             password
         })
 
         console.log(response)
+
+        setCookies('Name', response.data.username)
+        setCookies('HashedPassword', response.data.hashedPassword)
+        setCookies('UserId', response.data.userId)
+        setCookies('AuthToken', response.data.token)
+        
+        window.location.reload()
     }
 
     return(
@@ -50,7 +59,7 @@ export default function Auth(){
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     />}
                     {error && <p>Passwords do not match!</p>}
-                    <button className="standard-button"onClick={handleSubmit}>Log In</button>
+                    <button className="standard-button"onClick={handleSubmit}>Go!</button>
                 </div>
                     <div className="auth-options">
                         <button
