@@ -4,10 +4,7 @@ import {StreamChat} from 'stream-chat';
 import MessagingContainer from './components/MessagingContainer'
 import Auth from "./components/Auth"
 import Video from './components/Video'
-import {
-  Chat,
-  Channel
-} from 'stream-chat-react';
+import {Chat,Channel} from 'stream-chat-react';
 import {useCookies} from 'react-cookie'
 import '@stream-io/stream-chat-css/dist/css/index.css';
 

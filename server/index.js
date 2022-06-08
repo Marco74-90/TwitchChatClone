@@ -10,18 +10,15 @@ app.use(cors())
 app.use(express.json())
 
 
-const API_KEY = 'kvjfwedgn6km'
-const API_SECRET = 'ncd9ht9u5wsaz5jhcs3fep3r3qhftcn8ht8vpupfs5fqrghx83ynvqu8trr43a64'
-const APP_ID = '1167291'
 
 //signup
 app.post('/signup', async (req,res) => {
     try {
         const {username, password} = req.body
-        
+
         const userId = uuidv1()
         const hashedPassword =  await bcrypt.hash(password, 10)
-        const client = connect(API_KEY, API_SECRET, APP_ID)
+        const client = connect(process.env.API_KEY, process.env.API_SECRET, process.env.APP_ID)
         const token = client.createUserToken(userId)
 
         res.status(200).json({username, userId, hashedPassword, token})
@@ -37,8 +34,8 @@ app.post('/signup', async (req,res) => {
 app.post('/login', async (req, res) => {
     try {
         const {username, password} = req.body
-        const client = connect(API_KEY, API_SECRET, APP_ID)
-        const chatClient = StreamChat.getInstance(API_KEY, API_SECRET)
+        const client = connect(process.env.API_KEY, process.env.API_SECRET, process.env.APP_ID)
+        const chatClient = StreamChat.getInstance(process.env.API_KEY, process.env.API_SECRET)
         const {users} = await chatClient.queryUsers({name: username})
 
         if(!users.length) return res.json(400).json({message:"User not found!"})
